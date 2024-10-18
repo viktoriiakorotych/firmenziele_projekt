@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ziel bearbeiten</title>
+    <!-- Verlinken der CSS-Datei -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+</head>
+<body>
+    <h1>Ziel bearbeiten</h1>
+    <form method="POST">
+        <label for="statement">Ziel:</label>
+        <input type="text" id="statement" name="statement" value="{{ goal.statement }}" required><br>
+
+        <label for="criteria">Kriterien:</label>
+        <input type="text" id="criteria" name="criteria" value="{{ goal.criteria }}"><br>
+
+        <label for="status_from">Bewertung (1-10):</label>
+        <input type="number" id="status_from" name="status_from" value="{{ goal.status_from }}" min="1" max="10" required><br>
+
+        <label for="measure_success">Anregung/Erfolgskriterien:</label>
+        <input type="text" id="measure_success" name="measure_success" value="{{ goal.measure_success }}"><br>
+
+        <!-- Dropdown für die Auswahl der Abteilung -->
+        <label for="id_department">Abteilung:</label>
+        <select id="id_department" name="id_department" required>
+            {% for department in departments %}
+                <option value="{{ department.id_department }}" 
+                    {% if department.id_department == goal.id_department %}selected{% endif %}>
+                    {{ department.department_name }}
+                </option>
+            {% endfor %}
+        </select><br>
+
+        <!-- Dropdown für die Auswahl des Änderers -->
+        <label for="modified_by">Änderer:</label>
+        <select id="modified_by" name="modified_by" required>
+            {% for user in users %}
+                <option value="{{ user.id_user }}" 
+                    {% if user.id_user == goal.modified_by %}selected{% endif %}>
+                    {{ user.user_name }}
+                </option>
+            {% endfor %}
+        </select><br>
+
+        <input type="submit" value="Ziel aktualisieren">
+    </form><br><br><br>
+
+    <a href="{{ url_for('index') }}">Zurück zur Übersicht</a>
+</body>
+</html>

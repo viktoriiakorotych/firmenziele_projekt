@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firmenziele Übersicht</title>
+    <!-- Verlinken der CSS-Datei -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Font Awesome für Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <h1>Firmenziele Übersicht</h1>
+
+    <table border="1">
+        <tr>
+            <th>Abteilung</th>
+            <th>Aussage (Ziel)</th>
+            <th>Kriterien</th>
+            <th>Bewertung</th>
+            <th>Kommentar</th>
+            <th>Zuletzt geändert</th>
+            <th>Änderer</th>
+            <th>Anregung</th>
+            <th>Aktionen</th>
+        </tr>
+        {% for goal in goals %}
+        <tr>
+            <td>{{ goal.abteilung }}</td>  <!-- Abteilung -->
+            <td>{{ goal.ziel }}</td>   <!-- Aussage / Ziel -->
+            <td>{{ goal.kriterien }}</td>    <!-- Kriterien -->
+            <td>{{ goal.bewertung }}</td>       <!-- Bewertung -->
+            <td>{{ goal.kommentar }}</td>     <!-- Kommentar -->
+            <td>{{ goal.zuletzt_geaendert }}</td>  <!-- Zuletzt geändert -->
+            <td>{{ goal.aenderer }}</td>  <!-- Änderer -->
+            <td>{{ goal.anregung }}</td>  <!-- Anregung -->
+            <td>
+                <!-- Bearbeiten-Icon -->
+                <a href="/edit/{{ goal.id_goals }}" title="Bearbeiten">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <!-- Historie anzeigen-Icon -->
+                <a href="/history/{{ goal.id_goals }}" title="Historie anzeigen">
+                    <i class="fas fa-history"></i>
+                </a>
+                <!-- Löschen-Icon mit Formular -->
+                <form action="/delete/{{ goal.id_goals }}" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Möchtest du dieses Ziel wirklich löschen?');" title="Löschen" style="background:none; border:none; color:red;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="/create">Neues Ziel erstellen</a>
+    <a href="/chart_view_all">Grafische Auswertung anzeigen</a>
+
+</body>
+</html>

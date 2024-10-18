@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafische Auswertung für alle Ziele</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Verlinken der CSS-Datei -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+</head>
+<body>
+
+    <!-- Navigations-Links -->
+    <nav>
+        <a href="/">Aktuelle Ziele</a> |  <!-- Link zur Index-Seite -->
+        <a href="/history_overview">Historische Auswertung</a>  <!-- Link zur Historischen Auswertung -->
+    </nav>
+
+    <h1>Gesamte Score Historie für alle Ziele</h1>
+
+    <!-- Filterformular -->
+    <form id="filterForm">
+        <label for="abteilung">Abteilung:</label>
+        <select id="abteilung" name="abteilung">
+            <option value="">Alle</option>
+            {% for department in departments %}
+            <option value="{{ department.department_name }}">{{ department.department_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="date_from">Von:</label>
+        <input type="date" id="date_from" name="date_from">
+
+        <label for="date_to">Bis:</label>
+        <input type="date" id="date_to" name="date_to">
+
+        <button type="submit">Filter anwenden</button>
+    </form>
+
+    <canvas id="scoreChartAll" width="400" height="200"></canvas>
+
+    <script>
+        function loadChart(abteilung, dateFrom, dateTo) {
+            // Abrufen der gefilterten Score-Historie für alle Ziele
+            $.getJSON('/api/score_history_all', { abteilung: abteilung, date_from: dateFrom, date_to: dateTo }, function(data) {
+                const groupedData = data.reduce((acc, entry) => {
+                    if (!acc[entry.zielname]) {
+                        acc[entry.zielname] = {
+                            labels: [],
+                            scores: []
+                        };
+                    }
+                    acc[entry.zielname].labels.push(new Date(entry.last_modified_date).toLocaleDateString());
+                    acc[entry.zielname].scores.push(entry.new_score);
+                    return acc;
+                }, {});
+
+                const datasets = Object.keys(groupedData).map((zielname) => {
+                    return {
+                        label: zielname,
+                        data: groupedData[zielname].scores,
+                        borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`,
+                        borderWidth: 2,
+                        fill: false
+                    };
+                });
+
+                const ctx = document.getElementById('scoreChartAll').getContext('2d');
+                const scoreChartAll = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: groupedData[Object.keys(groupedData)[0]].labels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Datum'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Score'
+                                },
+                                min: 0,
+                                max: 10
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        // Bei Laden der Seite ohne Filter
+        $(document).ready(function() {
+            loadChart('', '', '');
+
+            // Bei Änderung der Filter: Formular wird neu abgeschickt
+            $('#filterForm').submit(function(event) {
+                event.preventDefault();
+                const abteilung = $('#abteilung').val();
+                const dateFrom = $('#date_from').val();
+                const dateTo = $('#date_to').val();
+                loadChart(abteilung, dateFrom, dateTo);
+            });
+        });
+    </script>
+
+</body>
+</html>

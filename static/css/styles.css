@@ -1,0 +1,54 @@
+/* Allgemeiner Hintergrund für die Seite */
+body {
+    background-color: #f0f0f0;  /* Hellgrauer Hintergrund */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Stil für Tabellen */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+/* Hintergrundfarbe für die Kopfzeile der Tabelle */
+th {
+    background-color: #f2f2f2;
+}
+
+/* Buttons: Rot, mit etwas Abstand */
+a, button {
+    background-color: red;  /* Rote Hintergrundfarbe */
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+/* Stil für den Button beim Überfahren mit der Maus */
+a:hover, button:hover {
+    background-color: darkred;  /* Dunkelrot bei Hover */
+}
+
+/* Formular-Buttons im Inline-Formular */
+form {
+    display: inline;
+}
+
+/* Icons anpassen */
+i {
+    font-size: 1.2em;
+    margin-right: 10px;
+    cursor: pointer;
+}

@@ -1,0 +1,62 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ziel Score Historie</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h1>Score Historie für Ziel</h1>
+    <canvas id="scoreChart" width="400" height="200"></canvas>
+
+    <script>
+        $(document).ready(function() {
+            // Abrufen der Score-Historie für ein spezifisches Ziel (z.B. mit ID 1)
+            $.getJSON('/api/score_history/1', function(data) {
+                // Bereite die Daten für die Darstellung im Chart auf
+                const labels = data.map(entry => new Date(entry.last_modified_date).toLocaleDateString());
+                const scores = data.map(entry => entry.new_score);
+
+                // Initialisiere das Chart mit Chart.js
+                const ctx = document.getElementById('scoreChart').getContext('2d');
+                const scoreChart = new Chart(ctx, {
+                    type: 'line', // Line chart
+                    data: {
+                        labels: labels, // Zeitstempel
+                        datasets: [{
+                            label: 'Score Entwicklung',
+                            data: scores, // Scores
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Datum'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Score'
+                                },
+                                min: 0,
+                                max: 10
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
